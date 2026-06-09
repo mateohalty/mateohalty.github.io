@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mateo Halty — Salesforce Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0f0d;
+    --ink2: #4a4a45;
+    --ink3: #9a9a92;
+    --paper: #faf9f6;
+    --accent: #1a4a3a;
+    --accent-light: #e8f0ec;
+    --line: rgba(15,15,13,0.1);
+    --serif: 'DM Serif Display', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  /* PRINT */
+  @media print {
+    @page { margin: 12mm 14mm; size: A4; }
+    body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .no-print { display: none !important; }
+    .page { max-width: 100%; }
+    header { padding: 20px 20px 16px; }
+    main { padding: 0 20px 20px; }
+    .name { font-size: 36px; }
+    .summary { padding-top: 16px; }
+    .summary p { font-size: 13px; line-height: 1.5; }
+    section { margin-top: 20px; padding-top: 14px; }
+    .section-label { margin-bottom: 14px; }
+    .job { margin-bottom: 18px; }
+    .job ul li { font-size: 12px; line-height: 1.5; }
+    .job-title { font-size: 16px; }
+    .cert-item, .edu-degree, .lang-name { font-size: 12px; }
+    a { color: inherit; text-decoration: none; }
+  }
+
+  /* LAYOUT */
+  .page { max-width: 860px; margin: 0 auto; }
+
+  header {
+    padding: 40px 40px 40px;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: end;
+  }
+  .name {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .name em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .title {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink2);
+    margin-top: 10px;
+  }
+  .contact-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+  }
+  .contact-grid a, .contact-grid span {
+    font-size: 13px;
+    color: var(--ink2);
+    text-decoration: none;
+    letter-spacing: 0.01em;
+  }
+  .contact-grid a:hover { color: var(--accent); }
+
+  main { padding: 0 40px 40px; }
+
+  /* SUMMARY */
+  .summary {
+    padding: 36px 0 0;
+    max-width: 640px;
+  }
+  .summary p {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--ink2);
+    line-height: 1.75;
+  }
+  .summary p strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* SECTIONS */
+  section {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+  }
+
+  /* EXPERIENCE */
+  .job { margin-bottom: 36px; }
+  .job:last-child { margin-bottom: 0; }
+  .job-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+  .job-title {
+    font-family: var(--serif);
+    font-size: 19px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .job-period {
+    font-size: 12px;
+    color: var(--ink3);
+    white-space: nowrap;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .job-company {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink2);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .job-company .dot {
+    width: 3px; height: 3px;
+    background: var(--ink3);
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .job ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .job ul li {
+    font-size: 14px;
+    color: var(--ink2);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.6;
+  }
+  .job ul li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--ink3);
+    font-size: 12px;
+    top: 2px;
+  }
+  .tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+  }
+  .tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 3px 10px;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 2px;
+  }
+
+  /* TWO-COL */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+
+  /* CERTIFICATIONS */
+  .cert-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .cert-item {
+    font-size: 14px;
+    color: var(--ink2);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.4;
+  }
+  .cert-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 6px;
+    height: 6px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+  }
+
+  /* EDUCATION */
+  .edu-item { margin-bottom: 18px; }
+  .edu-item:last-child { margin-bottom: 0; }
+  .edu-degree {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .edu-school {
+    font-size: 13px;
+    color: var(--ink2);
+  }
+  .edu-year {
+    font-size: 12px;
+    color: var(--ink3);
+    margin-top: 1px;
+  }
+
+  /* SKILLS GRID */
+  .skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* LANGUAGES */
+  .lang-list { display: flex; flex-direction: column; gap: 10px; }
+  .lang-item { display: flex; align-items: center; justify-content: space-between; }
+  .lang-name { font-size: 14px; color: var(--ink); font-weight: 500; }
+  .lang-level { font-size: 12px; color: var(--ink3); }
+
+  /* PRINT BUTTON */
+  .print-btn {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    box-shadow: 0 4px 20px rgba(26,74,58,0.3);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .print-btn:hover { background: #0f3326; transform: translateY(-1px); }
+
+  /* DIVIDER */
+  .divider {
+    width: 32px;
+    height: 2px;
+    background: var(--accent);
+    margin: 12px 0 20px;
+  }
+
+  @media (max-width: 640px) {
+    header { padding: 40px 24px 28px; grid-template-columns: 1fr; }
+    .contact-grid { align-items: flex-start; }
+    main { padding: 0 24px 48px; }
+    .two-col { grid-template-columns: 1fr; gap: 0; }
+    .job-header { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header>
+    <div>
+      <h1 class="name">Mateo <em>Halty</em></h1>
+      <p class="title">Salesforce Developer &nbsp;·&nbsp; Chemical Engineer</p>
+    </div>
+    <div class="contact-grid">
+      <a href="mailto:mateohalty@gmail.com">mateohalty@gmail.com</a>
+      <a href="tel:+59899570469">+598 99 570 469</a>
+      <a href="https://linkedin.com/in/mateo-halty-papa-68a177103" target="_blank">linkedin.com/in/mateo-halty-papa</a>
+      <span>Montevideo, Uruguay</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- SUMMARY -->
+    <div class="summary">
+      <p>Salesforce Developer with <strong>6 years of platform experience</strong> at Oktana and a background in Chemical Engineering. Proven expertise building scalable solutions with Apex, Lightning Web Components, and Experience Cloud, including large-scale Partner Communities serving over 1M users. Strong analytical foundation shaped by engineering training and cross-industry experience.</p>
+    </div>
+
+    <!-- EXPERIENCE -->
+    <section>
+      <p class="section-label">Experience</p>
+
+      <div class="job">
+        <div class="job-header">
+          <h2 class="job-title">Senior Salesforce Developer</h2>
+          <span class="job-period">Feb 2020 — Present</span>
+        </div>
+        <div class="job-company">
+          Oktana
+          <span class="dot"></span>
+          <span>6 years</span>
+        </div>
+        <ul>
+          <li>Developed and maintained Salesforce Communities including Partner Community and nonprofit Knowledge Hub platforms, delivering scalable solutions serving over 1M users.</li>
+          <li>Built custom business logic through Apex triggers, controllers, and test classes; implemented LWC components across onboarding, data management, and marketing program modules.</li>
+          <li>Built and deployed a custom Lightning Web Component published on AppExchange, successfully completing Salesforce's security review process.</li>
+          <li>Integrated Salesforce with external systems including other Salesforce orgs, Dun & Bradstreet, tax services, and MuleSoft endpoints using REST APIs.</li>
+          <li>Contributed to technical solution design for integrations and platform customizations, supporting architectural decisions and ensuring alignment with business requirements.</li>
+          <li>Worked across the full Salesforce development lifecycle, from requirements gathering to deployment, using CI/CD pipelines with Jenkins.</li>
+          <li>Collaborated in Agile environments, participating in sprint planning and backlog discussions aligned with business needs.</li>
+        </ul>
+        <div class="tech-tags">
+          <span class="tag">Apex</span><span class="tag">LWC</span><span class="tag">Aura</span>
+          <span class="tag">SOQL / SOSL</span><span class="tag">REST APIs</span>
+          <span class="tag">Git</span>
+          <span class="tag">Jenkins</span><span class="tag">Experience Cloud</span>
+          <span class="tag">Sales Cloud</span><span class="tag">Service Cloud</span>
+        </div>
+      </div>
+
+      <div class="job">
+        <div class="job-header">
+          <h2 class="job-title">Customization Engineer</h2>
+          <span class="job-period">Nov 2017 — Jan 2020</span>
+        </div>
+        <div class="job-company">Lexmark International, Inc.</div>
+        <ul>
+          <li>Led production operations and coordinated vendor management across multiple Latin American countries.</li>
+          <li>Managed procurement planning, billing approvals, and operational processes across regional teams.</li>
+          <li>Oversaw documentation and process standardization to support operational efficiency.</li>
+        </ul>
+        <div class="tech-tags">
+          <span class="tag">SAP ECC</span><span class="tag">Excel</span>
+        </div>
+      </div>
+
+      <div class="job">
+        <div class="job-header">
+          <h2 class="job-title">Specialist Technician</h2>
+          <span class="job-period">Feb 2016 — Nov 2017</span>
+        </div>
+        <div class="job-company">Roemmers Labs</div>
+        <ul>
+          <li>Performed process control and physicochemical analysis in pharmaceutical manufacturing.</li>
+          <li>Supported production ensuring compliance with quality and regulatory standards; participated in internal audits.</li>
+        </ul>
+      </div>
+
+    </section>
+
+    <!-- CERTIFICATIONS + EDUCATION -->
+    <section>
+      <div class="two-col">
+        <div>
+          <p class="section-label">Certifications</p>
+          <div class="cert-list">
+            <div class="cert-item">Salesforce Certified Sharing & Visibility Architect</div>
+            <div class="cert-item">Salesforce Certified Agentforce Specialist</div>
+            <div class="cert-item">Salesforce Certified Platform Administrator</div>
+            <div class="cert-item">Salesforce Certified Platform App Builder</div>
+            <div class="cert-item">Salesforce Certified Platform Developer I</div>
+          </div>
+        </div>
+        <div>
+          <p class="section-label">Education</p>
+          <div class="edu-item">
+            <div class="edu-degree">Systems Engineering</div>
+            <div class="edu-school">ORT University</div>
+          </div>
+          <div class="edu-item">
+            <div class="edu-degree">Chemical Engineering</div>
+            <div class="edu-school">Universidad de la República</div>
+          </div>
+          <div class="edu-item" style="margin-top: 8px;">
+            <div class="edu-degree">English — Proficiency Level</div>
+            <div class="edu-school">Irish College of English, Dublin</div>
+            <div class="edu-year">First Certificate in English (FCE) · Cambridge 2008</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS + LANGUAGES -->
+    <section>
+      <div class="two-col">
+        <div>
+          <p class="section-label">Core Skills</p>
+          <div class="skills-grid">
+            <span class="tag">Apex</span><span class="tag">LWC</span>
+            <span class="tag">SOQL / SOSL</span><span class="tag">REST APIs</span>
+            <span class="tag">HTML / CSS</span><span class="tag">Git</span><span class="tag">Jenkins</span>
+            <span class="tag">Agile / Scrum</span><span class="tag">AppExchange</span>
+            <span class="tag">Experience Cloud</span>
+          </div>
+        </div>
+        <div>
+          <p class="section-label">Languages</p>
+          <div class="lang-list">
+            <div class="lang-item">
+              <span class="lang-name">Spanish</span>
+              <span class="lang-level">Native</span>
+            </div>
+            <div class="lang-item">
+              <span class="lang-name">English</span>
+              <span class="lang-level">Advanced · FCE Cambridge</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<button class="print-btn no-print" onclick="window.print()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg>
+  Print / Save PDF
+</button>
+
+</body>
+</html>
